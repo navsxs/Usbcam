@@ -1,0 +1,59 @@
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "io.boostgaurdian"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "io.boostgaurdian"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 1
+        versionName = "0.1.0"
+    }
+
+    signingConfigs {
+        create("release") {
+            val storeFilePath = System.getenv("BOOSTGUARDIAN_KEYSTORE")
+            val storePasswordEnv = System.getenv("BOOSTGUARDIAN_KEYSTORE_PASSWORD")
+            val keyAliasEnv = System.getenv("BOOSTGUARDIAN_KEY_ALIAS")
+            val keyPasswordEnv = System.getenv("BOOSTGUARDIAN_KEY_PASSWORD")
+
+            if (!storeFilePath.isNullOrBlank()) {
+                storeFile = file(storeFilePath)
+                storePassword = storePasswordEnv
+                keyAlias = keyAliasEnv
+                keyPassword = keyPasswordEnv
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("debug") {
+            // Uses Android's normal debug keystore.
+        }
+
+        getByName("release") {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-service:2.8.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+}
